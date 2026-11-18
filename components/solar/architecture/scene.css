@@ -1,0 +1,119 @@
+.sts-arch {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  background: linear-gradient(
+    175deg,
+    #0c1522 8%,
+    #18283d 40%,
+    #24354b 60%,
+    #101e27 76%,
+    #0a1219 96%
+  );
+}
+.sts-arch-plate {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 100%;
+  aspect-ratio: 1881 / 836;
+  transform: translateX(-50%);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    #000 14%,
+    #000 88%,
+    transparent 100%
+  );
+}
+.sts-arch-photo,
+.sts-arch-drawing {
+  position: absolute;
+  display: block;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+.sts-arch .arch-glaze {
+  fill: #54718a;
+  fill-opacity: 0.09;
+  stroke: none;
+}
+.sts-arch .arch-ink {
+  fill: none;
+  stroke: #d4e1e9;
+  stroke-width: 1.35;
+}
+.sts-arch .arch-ink-fine {
+  fill: none;
+  stroke: #a4bbca;
+  stroke-width: 1;
+}
+.sts-arch .arch-fig-label path,
+.sts-arch .arch-fig-label circle {
+  fill: none;
+  stroke: #a9bcc8;
+  stroke-width: 1.15;
+}
+.sts-arch .arch-fig-label text {
+  fill: #dfebf2;
+  stroke: none;
+  font:
+    15px/1.15 ui-monospace,
+    "SFMono-Regular",
+    Consolas,
+    monospace;
+  letter-spacing: 0.25px;
+}
+@media (min-aspect-ratio: 21/9) {
+  .sts-arch-plate {
+    bottom: -8%;
+  }
+}
+@media (max-aspect-ratio: 5/4) {
+  .sts-arch-plate {
+    width: 112%;
+    left: 47%;
+    bottom: 13%;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  .sts-arch-plate {
+    width: 128%;
+    left: 45%;
+    bottom: 17%;
+  }
+}
+@media (max-width: 600px) and (orientation: portrait) {
+  .sts-arch-plate {
+    width: max(158%, 570px);
+    left: 43%;
+    bottom: 19%;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 18%,
+      #000 88%,
+      transparent
+    );
+  }
+  .sts-arch .arch-fig-label {
+    display: none;
+  }
+  .sts-arch .arch-ink {
+    stroke-width: 1.9;
+  }
+  .sts-arch .arch-ink-fine {
+    stroke-width: 1.4;
+  }
+}
+@media (max-height: 540px) and (orientation: landscape) {
+  .sts-arch-plate {
+    width: min(100%, 260vh);
+    bottom: -3%;
+  }
+}

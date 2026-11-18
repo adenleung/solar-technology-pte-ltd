@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Solar production timings</title>
+    <style>
+      body {
+        font: 14px system-ui;
+        margin: 10px;
+        background: #ecefeb;
+        color: #162025;
+      }
+      h1 {
+        font-size: 18px;
+      }
+      pre {
+        white-space: pre-wrap;
+      }
+      iframe {
+        display: block;
+        border: 0;
+      }
+      main {
+        position: fixed;
+        inset: 88px 0 0;
+        overflow: auto;
+      }
+      pre {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(60%, 760px);
+        height: 84px;
+        margin: 0;
+        overflow: auto;
+        background: #f9f9f5;
+        z-index: 1;
+        font: 11px/1.1 monospace;
+        padding: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Local browser timing sample</h1>
+    <label
+      >Size
+      <select id="size">
+        <option value="390x844">390 × 844</option>
+        <option value="1280x800">1280 × 800</option>
+      </select></label
+    >
+    <button id="sample">Load fresh sample</button>
+    <pre id="metrics">Ready</pre>
+    <main></main>
+    <script>
+      const report = document.querySelector("#metrics"),
+        host = document.querySelector("main");
+      document.querySelector("#sample").onclick = () => {
+        const [w, h] = document
+            .querySelector("#size")
+            .value.split("x")
+            .map(Number),
+          frame = document.createElement("iframe");
+        frame.title = "Production timing sample";
+        frame.width = w;
+        frame.height = h;
+        const values = {
+          viewport: w + " × " + h,
+          LCPms: null,
+          CLS: 0,
+          longestObservedInteractionMs: null,
+        };
+        const render = () =>
+          (report.textContent = JSON.stringify(values, null, 1));
+        frame.onload = () => {
+          const W = frame.contentWindow,
+            D = frame.contentDocument,
+            script = D.createElement("script");
+          script.src = "/__qa/web-vitals.js";
+          script.onload = () => {
+            const options = { reportAllChanges: true };
+            W.webVitals.onLCP((m) => {
+              values.LCPms = Math.round(m.value);
+              values.candidate = m.entries.at(-1)?.element?.tagName;
+              render();
+            }, options);
+            W.webVitals.onCLS((m) => {
+              values.CLS = Number(m.value.toFixed(4));
+              render();
+            }, options);
+            W.webVitals.onINP((m) => {
+              values.longestObservedInteractionMs = m.value;
+              render();
+            }, options);
+            const nav = W.performance.getEntriesByType("navigation")[0];
+            values.TTFBms = nav ? Math.round(nav.responseStart) : null;
+            values.FCPms =
+              Math.round(
+                W.performance.getEntriesByName("first-contentful-paint")[0]
+                  ?.startTime || 0,
+              ) || null;
+            render();
+          };
+          D.head.appendChild(script);
+        };
+        frame.src = "/";
+        host.replaceChildren(frame);
+        render();
+      };
+    </script>
+  </body>
+</html>
